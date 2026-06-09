@@ -1,0 +1,27 @@
+{
+  "name": "andromeda-web",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Static front page for Andromeda, a working-title game by GreyBody Games.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "author": "Sayak Mukhopadhyay",
+  "license": "UNLICENSED",
+  "homepage": "https://andromeda.greybodygames.com",
+  "devDependencies": {
+    "prettier": "3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.0.12"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

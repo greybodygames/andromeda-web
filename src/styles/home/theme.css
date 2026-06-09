@@ -1,0 +1,32 @@
+@theme {
+  --font-sans: 'Chakra Petch', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --color-body: #050505;
+  --color-ink: #f2f2f2;
+  --color-muted: #a7a7a7;
+  --color-faint: #666666;
+  --color-line: rgba(255, 255, 255, 0.16);
+}
+
+@font-face {
+  font-family: 'GreyBody Display';
+  src: url('../../assets/fonts/greybody-display.woff') format('woff');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('../../assets/fonts/chakra-petch/chakra-petch-latin-400-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Chakra Petch';
+  src: url('../../assets/fonts/chakra-petch/chakra-petch-latin-700-normal.woff2') format('woff2');
+  font-display: swap;
+  font-style: normal;
+  font-weight: 700;
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/greybody_games_logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Andromeda</title>
+    <meta
+      name="description"
+      content="Andromeda is an early work-in-progress, working-title space salvage management sim by GreyBody Games."
+    />
+    <meta name="theme-color" content="#050505" />
+  </head>
+  <body>
+    <main class="poster poster-shell" id="top">
+      <div
+        class="poster-noise pointer-events-none absolute inset-[-8%] -z-[2] opacity-70 max-[980px]:inset-0"
+        aria-hidden="true"
+      ></div>
+      <div
+        class="poster-grid pointer-events-none absolute inset-[-8%] -z-[3] max-[980px]:inset-0"
+        aria-hidden="true"
+      ></div>
+      <canvas
+        class="pointer-events-none absolute inset-[-8%] z-[1] block h-[116%] w-[116%] opacity-[0.86] max-[980px]:inset-0 max-[980px]:h-[34rem] max-[980px]:w-full max-[980px]:opacity-[0.28]"
+        data-starfield-canvas
+        aria-hidden="true"
+      ></canvas>
+      <canvas
+        class="pointer-events-none absolute inset-0 z-[4] block size-full"
+        data-technical-connectors
+        aria-hidden="true"
+      ></canvas>
+
+      <section class="identity-stage" aria-labelledby="site-title">
+        <div class="identity-orbit-anchor" data-identity-anchor aria-hidden="true">
+          <canvas data-orbit-canvas></canvas>
+        </div>
+
+        <h1 id="site-title" class="wordmark" aria-label="Andromeda">
+          <span class="sr-only">Andromeda</span>
+          <span class="wordmark-plane" data-wordmark-plane aria-hidden="true">
+            <span class="wordmark-line">ANDROMEDA</span>
+            <span class="identity-subtitle">Working Title</span>
+          </span>
+        </h1>
+      </section>
+
+      <div class="poster-content">
+        <aside
+          class="annotation max-w-[min(29rem,30vw)] self-end max-[980px]:relative max-[980px]:!max-w-[42rem] max-[980px]:self-start max-[620px]:!max-w-[calc(100vw-2rem)]"
+          aria-labelledby="work-label"
+        >
+          <span class="annotation-index" data-connector-anchor="work">01</span>
+          <div class="annotation-body">
+            <p
+              class="annotation-heading after:w-[min(20vw,17rem)] after:bg-[linear-gradient(90deg,rgba(255,255,255,0.48),rgba(255,255,255,0.08))] max-[980px]:after:w-full"
+              id="work-label"
+            >
+              Current work
+            </p>
+            <div class="group flex flex-col gap-[0.42rem]">
+              <span
+                class="interactive-title text-[clamp(2rem,3.2vw,3.55rem)] leading-[0.95] font-bold tracking-[0] text-[#f5f5f5]"
+                >Vertical slice</span
+              >
+              <span class="annotation-copy block max-w-full"
+                >Inspect, classify, package, and hand off salvage in orbit.</span
+              >
+            </div>
+          </div>
+        </aside>
+
+        <aside
+          class="annotation mt-auto max-w-[min(26rem,28vw)] self-start max-[980px]:mt-0 max-[980px]:ml-auto max-[980px]:!max-w-[42rem] max-[620px]:ml-0 max-[620px]:!max-w-[calc(100vw-2rem)] min-[621px]:flex-row-reverse"
+          aria-labelledby="about-title"
+        >
+          <span class="annotation-index" data-connector-anchor="about">02</span>
+          <div class="annotation-body">
+            <p
+              class="annotation-heading text-right after:ml-auto after:w-full after:bg-[linear-gradient(90deg,rgba(255,255,255,0.08),rgba(255,255,255,0.48))] max-[620px]:text-left max-[620px]:after:ml-0"
+              id="about-title"
+            >
+              Status
+            </p>
+            <p class="annotation-copy text-left">
+              Andromeda is a working title for a single-player game in early development. The name, scope, and public
+              identity are provisional while the core systems take shape.
+            </p>
+          </div>
+        </aside>
+
+        <nav class="social-nav" aria-label="Social links">
+          <a class="studio-link group" href="https://greybodygames.com/" aria-label="GreyBody Games website">
+            <img src="/greybody_games_logo.svg" width="64" height="64" alt="" />
+            <span class="studio-wordmark">GreyBody Games</span>
+            <span class="social-arrow" aria-hidden="true">↗</span>
+          </a>
+          <div class="social-list">
+            <a class="group social-link" href="https://github.com/greybodygames">
+              <span class="social-index left-0" aria-hidden="true">01</span>
+              <span class="social-title">GitHub</span>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="group social-link grow-[1.2] border-l border-white/[0.16] pl-[clamp(1.2rem,3vw,3rem)] max-[980px]:grow max-[980px]:border-l-0 max-[980px]:pl-0"
+              href="https://x.com/greybodygames"
+            >
+              <span class="social-index left-[clamp(1.2rem,3vw,3rem)] max-[980px]:left-0" aria-hidden="true">02</span>
+              <span class="social-title">X / Twitter</span>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="group social-link border-l border-white/[0.16] pl-[clamp(1.2rem,3vw,3rem)] max-[980px]:border-l-0 max-[980px]:pl-0"
+              href="https://sayakm.me/"
+            >
+              <span class="social-index left-[clamp(1.2rem,3vw,3rem)] max-[980px]:left-0" aria-hidden="true">03</span>
+              <span class="social-title">Blog</span>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a
+              class="group social-link border-l border-white/[0.16] pl-[clamp(1.2rem,3vw,3rem)] max-[980px]:border-l-0 max-[980px]:pl-0"
+              href="mailto:contact@greybodygames.com"
+            >
+              <span class="social-index left-[clamp(1.2rem,3vw,3rem)] max-[980px]:left-0" aria-hidden="true">04</span>
+              <span class="social-title">Contact</span>
+              <span class="social-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </nav>
+
+        <p class="copyright-statement">
+          <span class="copyright-marker" data-copyright-anchor>&copy;</span>
+          2026, GreyBody Games / Sayak Mukhopadhyay
+        </p>
+      </div>
+    </main>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+@import 'tailwindcss';
+
+@import './styles/home/theme.css';
+@import './styles/home/base.css';
+@import './styles/home/components.css';
+@import './styles/home/poster.css';
+@import './styles/home/identity.css';
+@import './styles/home/responsive.css';
