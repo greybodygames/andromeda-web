@@ -36,27 +36,58 @@
   }
 
   .studio-link {
-    @apply mb-4 flex w-fit max-w-full items-center gap-4 border border-white/[0.18] p-[0.85rem_1rem] text-[#eeeeee] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none max-[620px]:w-full;
-
-    img {
-      @apply size-10 shrink-0 rounded-full opacity-90 transition-opacity duration-[160ms] group-hover:opacity-100 group-focus-visible:opacity-100;
-    }
+    @apply mb-4 flex w-fit max-w-full items-center justify-between gap-6 border border-white/[0.18] p-[0.82rem_1rem_0.72rem] text-[#eeeeee] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none max-[620px]:w-full;
   }
 
   .studio-wordmark {
-    display: inline-block;
+    display: grid;
     min-width: 0;
-    font-family: 'GreyBody Display', Impact, sans-serif;
-    font-size: 1.35rem;
-    letter-spacing: 0.08em;
-    line-height: 0.9;
-    text-transform: uppercase;
-    transition: transform 180ms ease;
+    gap: 0.26rem;
+    color: #f4f4f4;
+    line-height: 1;
   }
 
-  .studio-link:hover .studio-wordmark,
-  .studio-link:focus-visible .studio-wordmark {
-    transform: skewX(-6deg);
+  .studio-wordmark-line {
+    display: grid;
+    grid-template-columns: auto 1.02em auto;
+    align-items: center;
+    font-family: 'GreyBody Display', Impact, sans-serif;
+    font-size: clamp(1.55rem, 2.25vw, 2.08rem);
+    letter-spacing: 0.02em;
+    line-height: 0.82;
+    text-transform: uppercase;
+  }
+
+  .studio-logo-letter {
+    display: grid;
+    aspect-ratio: 1;
+    place-items: center;
+  }
+
+  .studio-logo-letter img {
+    width: 0.98em;
+    height: auto;
+    border-radius: 50%;
+    opacity: 0.92;
+    filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.18));
+  }
+
+  .studio-games {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.44em;
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .studio-link .social-arrow {
+    margin-bottom: 0;
+    scale: 1;
+    font-size: 1.55rem;
+    line-height: 1;
   }
 
   .social-list {
