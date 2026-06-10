@@ -115,7 +115,7 @@
   }
 
   .copyright-statement {
-    @apply pointer-events-auto absolute top-1/2 left-[clamp(1.4rem,4vw,4rem)] z-[5] origin-left -translate-y-1/2 -rotate-90 text-[0.72rem] font-bold tracking-[0.08em] whitespace-nowrap text-white/[0.66] uppercase max-[980px]:relative max-[980px]:top-auto max-[980px]:left-auto max-[980px]:mt-[1.8rem] max-[980px]:translate-y-0 max-[980px]:rotate-0;
+    @apply pointer-events-auto absolute right-[clamp(1.4rem,4vw,4rem)] bottom-[clamp(7.2rem,14vh,9rem)] z-[5] origin-right rotate-90 text-[0.72rem] font-bold tracking-[0.08em] whitespace-nowrap text-white/[0.66] uppercase max-[980px]:relative max-[980px]:right-auto max-[980px]:bottom-auto max-[980px]:mt-[1.8rem] max-[980px]:rotate-0;
   }
 
   .copyright-marker {
