@@ -5,5 +5,6 @@ export default defineConfig({
   plugins: [tailwindcss()],
   server: {
     allowedHosts: ['local-test.greybodygames.com'],
+    port: 5174,
   },
 })
