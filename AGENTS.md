@@ -21,6 +21,13 @@ This file is the shared operating context for agents working in this repository.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
 - Local font assets live in `src/assets/fonts/`.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
+- GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`; it builds the site with the Node.js version pinned in `.nvmrc` and publishes `dist/` after pushes to `main`.
+
+## Deployment
+
+- GitHub Pages is the deployment authority for this repository. Do not reintroduce the retired Azure Static Web Apps pipeline.
+- The deployment workflow must retain least-privilege Pages permissions, serialized production deployments, an explicit build-output check, and symlink rejection before artifact upload.
+- `https://andromeda.greybodygames.com` is the intended custom domain. GitHub Pages configuration and DNS cutover are external release steps and must be verified without interrupting the currently live site.
 
 ## Design Direction
 
@@ -56,6 +63,7 @@ Run the narrowest useful checks for the change:
 - `npm run format:check` for formatting-only verification.
 - `npm run build` for TypeScript and production build verification.
 - `npm run dev` when visual or interaction changes need browser inspection.
+- For deployment changes, confirm that `dist/index.html` exists and `dist/` contains no symbolic links, matching the GitHub Pages workflow gate.
 
 For visual changes, inspect at least desktop and mobile widths. Check that:
 
