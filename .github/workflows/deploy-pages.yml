@@ -35,8 +35,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
       - name: Build site
-        run: npm run build
+        run: npm run build -- --base "${{ steps.pages.outputs.base_path }}/"
 
       - name: Validate generated site
         shell: bash
@@ -47,9 +51,6 @@ jobs:
             echo "Generated output must not contain symbolic links." >&2
             exit 1
           fi
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v6
 
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v5

@@ -21,7 +21,7 @@ This file is the shared operating context for agents working in this repository.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
 - Local font assets live in `src/assets/fonts/`.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
-- GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`; it builds the site with the Node.js version pinned in `.nvmrc` and publishes `dist/` after pushes to `main`.
+- GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`; it builds the site with the Node.js version pinned in `.nvmrc`, derives Vite's base path from `actions/configure-pages`, and publishes `dist/` after pushes to `main`.
 
 ## Deployment
 
