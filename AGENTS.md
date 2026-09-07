@@ -21,12 +21,12 @@ This file is the shared operating context for agents working in this repository.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
 - Local font assets live in `src/assets/fonts/`.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
-- GitHub Pages deployment is defined in `.github/workflows/deploy-pages.yml`; it builds the site with the Node.js version pinned in `.nvmrc`, derives Vite's base path from `actions/configure-pages`, and publishes `dist/` after pushes to `main`.
+- `.github/workflows/pipeline.yml` owns repository events and calls the reusable CI and GitHub Pages deployment workflows. CI uses the Node.js version pinned in `.nvmrc`, builds `dist/` once, and passes the validated output to deployment as an ordinary workflow artifact.
 
 ## Deployment
 
 - GitHub Pages is the deployment authority for this repository. Do not reintroduce the retired Azure Static Web Apps pipeline.
-- The deployment workflow must retain least-privilege Pages permissions, serialized production deployments, an explicit build-output check, and symlink rejection before artifact upload.
+- The pipeline must retain least-privilege Pages permissions, serialized production deployments, and static-site validation before artifact upload. The validation must require a root `index.html` and reject symbolic links.
 - `https://andromeda.greybodygames.com` is the intended custom domain. GitHub Pages configuration and DNS cutover are external release steps and must be verified without interrupting the currently live site.
 
 ## Design Direction
