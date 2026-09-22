@@ -24,7 +24,7 @@ jobs:
     name: CI
     permissions:
       contents: read
-    uses: ./.github/workflows/ci.yml
+    uses: $/.github/workflows/ci.yml
     with:
       publish-artifact: ${{ github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
 
@@ -43,6 +43,6 @@ jobs:
       contents: read
       pages: write
       id-token: write
-    uses: ./.github/workflows/deploy-pages.yml
+    uses: $/.github/workflows/deploy-pages.yml
     with:
       artifact-name: site-andromeda-web
