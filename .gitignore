@@ -212,3 +212,7 @@ dist
 ### Custom
 
 AgentNotes/
+
+# Cloudflare Wrangler
+.wrangler/
+.dev.vars*

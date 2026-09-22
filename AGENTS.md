@@ -22,12 +22,15 @@ This file is the shared operating context for agents working in this repository.
 - Local font assets live in `src/assets/fonts/`.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
 - `.github/workflows/pipeline.yml` owns repository events and calls the reusable CI and GitHub Pages deployment workflows. CI uses the Node.js version pinned in `.nvmrc`, builds `dist/` once, and passes the validated output to deployment as an ordinary workflow artifact.
+- `workers/docs-router/` owns the Cloudflare Worker that routes the canonical `/docs` path to the private documentation origin while leaving the website root on GitHub Pages.
 
 ## Deployment
 
 - GitHub Pages is the deployment authority for this repository. Do not reintroduce the retired Azure Static Web Apps pipeline.
 - The pipeline must retain least-privilege Pages permissions, serialized production deployments, and static-site validation before artifact upload. The validation must require a root `index.html` and reject symbolic links.
 - `https://andromeda.greybodygames.com` is the intended custom domain. GitHub Pages configuration and DNS cutover are external release steps and must be verified without interrupting the currently live site.
+- Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
+- The documentation router is intentionally secretless. Cloudflare's same-zone Worker identity and a WAF custom rule protect the origin; do not add a service token unless the trust boundary changes.
 
 ## Design Direction
 
@@ -63,6 +66,7 @@ Run the narrowest useful checks for the change:
 - `npm run format:check` for formatting-only verification.
 - `npm run build` for TypeScript and production build verification.
 - `npm run dev` when visual or interaction changes need browser inspection.
+- `npm run worker:check` to validate the Worker workspace bundle without deploying it.
 - For deployment changes, confirm that `dist/index.html` exists and `dist/` contains no symbolic links, matching the GitHub Pages workflow gate.
 
 For visual changes, inspect at least desktop and mobile widths. Check that:

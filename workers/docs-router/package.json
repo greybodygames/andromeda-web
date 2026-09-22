@@ -1,0 +1,13 @@
+{
+  "name": "@greybodygames/andromeda-docs-router",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.136.2"
+  }
+}
