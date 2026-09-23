@@ -31,6 +31,7 @@ This file is the shared operating context for agents working in this repository.
 - `https://andromeda.greybodygames.com` is the intended custom domain. GitHub Pages configuration and DNS cutover are external release steps and must be verified without interrupting the currently live site.
 - Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
 - The documentation router is intentionally secretless. Cloudflare's same-zone Worker identity and a WAF custom rule protect the origin; do not add a service token unless the trust boundary changes.
+- `/docs/.access-check` is the Access-protected, no-store `204` probe used to reveal the otherwise-hidden documentation link on the public page. Keep it under the `/docs` Access application and do not replace it with an endpoint that exposes identity data.
 
 ## Design Direction
 

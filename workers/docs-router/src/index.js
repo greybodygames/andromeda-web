@@ -40,6 +40,10 @@ function isDocumentationPath(pathname, pathPrefix) {
   return pathname === pathPrefix || pathname.startsWith(`${pathPrefix}/`)
 }
 
+function isAccessCheckPath(pathname, pathPrefix) {
+  return pathname === `${pathPrefix}/.access-check`
+}
+
 export default {
   async fetch(request, env) {
     let configuration
@@ -72,6 +76,18 @@ export default {
         status: 405,
         headers: {
           Allow: 'GET, HEAD',
+          'Cache-Control': 'no-store',
+        },
+      })
+    }
+
+    // Cloudflare Access runs before this Worker. A response from this endpoint
+    // therefore proves that Access admitted the request, without exposing any
+    // identity data or contacting the documentation origin.
+    if (isAccessCheckPath(publicUrl.pathname, pathPrefix)) {
+      return new Response(null, {
+        status: 204,
+        headers: {
           'Cache-Control': 'no-store',
         },
       })

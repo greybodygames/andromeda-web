@@ -9,7 +9,37 @@ const annotationIndices = {
   work: document.querySelector<HTMLElement>('[data-connector-anchor="work"]'),
 }
 const copyrightAnchor = document.querySelector<HTMLElement>('[data-copyright-anchor]')
+const docsLink = document.querySelector<HTMLAnchorElement>('[data-docs-link]')
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+let docsAccessCheckGeneration = 0
+
+const checkDocsAccess = async () => {
+  if (!docsLink) {
+    return
+  }
+
+  const generation = ++docsAccessCheckGeneration
+
+  try {
+    const response = await fetch('/docs/.access-check', {
+      method: 'HEAD',
+      cache: 'no-store',
+      credentials: 'same-origin',
+      redirect: 'manual',
+    })
+
+    if (generation === docsAccessCheckGeneration) {
+      docsLink.hidden = response.status !== 204
+    }
+  } catch {
+    if (generation === docsAccessCheckGeneration) {
+      docsLink.hidden = true
+    }
+  }
+}
+
+window.addEventListener('pageshow', () => void checkDocsAccess())
+window.addEventListener('focus', () => void checkDocsAccess())
 
 type Star = {
   x: number

@@ -59,8 +59,38 @@
     @apply mb-[0.1rem] shrink-0 scale-[0.62] text-white/[0.74] transition-transform duration-[180ms] ease-[ease] group-hover:rotate-45 group-focus-visible:rotate-45 max-[980px]:mb-[0.2rem];
   }
 
+  .studio-nav {
+    @apply pointer-events-none absolute top-[clamp(1.4rem,4vw,4rem)] left-[clamp(1.4rem,4vw,4rem)] z-[6] flex w-fit max-w-full flex-col items-stretch gap-2 max-[980px]:relative max-[980px]:top-auto max-[980px]:left-auto max-[980px]:mb-4 max-[620px]:w-full;
+  }
+
   .studio-link {
-    @apply pointer-events-auto absolute top-[clamp(1.4rem,4vw,4rem)] left-[clamp(1.4rem,4vw,4rem)] z-[6] flex w-fit max-w-full items-center justify-between gap-6 border border-white/[0.18] p-[0.82rem_1rem_0.72rem] text-[#eeeeee] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none max-[980px]:relative max-[980px]:top-auto max-[980px]:left-auto max-[980px]:mb-4 max-[620px]:w-full;
+    @apply pointer-events-auto flex w-fit max-w-full items-center justify-between gap-6 border border-white/[0.18] p-[0.82rem_1rem_0.72rem] text-[#eeeeee] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none max-[620px]:w-full;
+  }
+
+  .docs-link {
+    @apply pointer-events-auto flex min-h-[2.8rem] items-center justify-between gap-6 border border-white/[0.14] px-4 py-2 text-[0.78rem] leading-none font-bold tracking-[0.3em] text-white/[0.68] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none;
+    animation: docs-link-reveal 220ms ease-out both;
+  }
+
+  .docs-link[hidden] {
+    display: none;
+  }
+
+  .docs-link .social-arrow {
+    margin-bottom: 0;
+    font-size: 1.2rem;
+  }
+
+  @keyframes docs-link-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(-0.35rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .studio-wordmark {

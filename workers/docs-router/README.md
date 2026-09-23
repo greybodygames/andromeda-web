@@ -31,6 +31,17 @@ Cloudflare must also be configured with:
 
 No service token, Worker secret, or GitHub Actions secret is required.
 
+## Authenticated access check
+
+`GET` and `HEAD` requests to `/docs/.access-check` return `204 No Content`
+with `Cache-Control: no-store` after the canonical Access policy has admitted
+the request. The Worker handles this endpoint before proxying to the
+documentation origin and does not expose identity data.
+
+The public website uses this endpoint to decide whether to reveal its
+otherwise-hidden documentation link. It must remain inside the existing
+`/docs` Access application; do not make it public or cache its response.
+
 ## Cloudflare Git integration
 
 Connect the `andromeda-docs-router` Worker to the `greybodygames/andromeda-web` GitHub repository using Cloudflare Workers Builds:
@@ -59,6 +70,7 @@ After production deployment, verify:
 
 - `/` still comes from GitHub Pages.
 - `/docs` and `/docs/*` require the canonical Access policy and reach the documentation site.
+- An authenticated `GET` or `HEAD` request to `/docs/.access-check` returns `204` with `Cache-Control: no-store`; the same request while signed out does not reach the Worker until Access authenticates it.
 - `/docs-example` passes through to GitHub Pages.
 - Direct requests to `andromeda-docs.greybodygames.com` remain blocked.
 - Documentation navigation, Next assets, search, API graph assets, redirects, and query strings work through the canonical hostname.
