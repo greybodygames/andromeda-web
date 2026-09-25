@@ -1,0 +1,108 @@
+name: Sync OAuth2 Proxy templates
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - auth/**
+      - plugins/auth-preview.ts
+  schedule:
+    - cron: '17 3 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sync-oauth2-proxy-templates
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: gitops-template-sync
+    steps:
+      - name: Check out authoritative templates
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          path: source
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: source/.nvmrc
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Build authoritative templates
+        working-directory: source
+        run: |
+          npm ci
+          npm run build
+
+      - name: Create GitOps installation token
+        id: gitops-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GITOPS_APP_CLIENT_ID }}
+          private-key: ${{ secrets.GITOPS_APP_PRIVATE_KEY }}
+          owner: SayakMukhopadhyay
+          repositories: k8s-landscape-charts
+          permission-contents: write
+
+      - name: Check out deployment chart
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: SayakMukhopadhyay/k8s-landscape-charts
+          ref: main
+          path: charts
+          token: ${{ steps.gitops-token.outputs.token }}
+          persist-credentials: true
+
+      - name: Synchronize exact chart files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C charts config user.name 'andromeda-web[bot]'
+          git -C charts config user.email 'andromeda-web[bot]@users.noreply.github.com'
+
+          for attempt in 1 2 3 4 5; do
+            git -C charts fetch origin main
+            git -C charts checkout --force --detach origin/main
+
+            for name in sign_in.html error.html; do
+              {
+                cat <<'NOTICE'
+          {{/*
+          GENERATED FILE — DO NOT EDIT DIRECTLY.
+          Authoritative source: greybodygames/andromeda-web/auth/templates.
+          Changes on andromeda-web main synchronize this deployment copy.
+          */}}
+          NOTICE
+                cat "source/auth/dist/$name"
+              } > "charts/oauth2-proxy/files/templates/$name"
+            done
+
+            expected=$'oauth2-proxy/files/templates/error.html\noauth2-proxy/files/templates/sign_in.html'
+            changed=$(git -C charts status --short --untracked-files=all | cut -c4- | LC_ALL=C sort)
+            if [[ -z "$changed" ]]; then
+              echo 'Deployment copies are already current.'
+              exit 0
+            fi
+            if [[ "$changed" != "$expected" && "$changed" != 'oauth2-proxy/files/templates/error.html' && "$changed" != 'oauth2-proxy/files/templates/sign_in.html' ]]; then
+              echo "Unexpected chart changes: $changed" >&2
+              exit 1
+            fi
+
+            git -C charts add -- oauth2-proxy/files/templates/sign_in.html oauth2-proxy/files/templates/error.html
+            git -C charts commit -m 'chore(oauth2-proxy): sync Andromeda auth templates'
+            if git -C charts push origin HEAD:refs/heads/main; then
+              exit 0
+            fi
+            echo "Concurrent update rejected attempt $attempt; refreshing both main branches."
+          done
+
+          echo 'Could not synchronize after five non-force attempts.' >&2
+          exit 1

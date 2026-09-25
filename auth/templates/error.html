@@ -1,0 +1,56 @@
+{{define "error.html"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#050505" />
+    <title>Unable to complete sign-in | GreyBody Games</title>
+    <style>
+      __AUTH_CSS__
+    </style>
+  </head>
+  <body class="auth-error">
+    <div class="shell">
+      <header>
+        <a class="brand" href="https://greybodygames.com/" aria-label="GreyBody Games website">
+          <span class="brand-wordmark" aria-hidden="true">
+            <span class="brand-wordmark-line">
+              <span>GREYB</span>
+              <span class="brand-logo"
+                ><img src="https://greybodygames.com/greybody_games_logo.svg" width="64" height="64" alt=""
+              /></span>
+              <span>DY</span>
+            </span>
+            <span class="brand-games">Games</span>
+          </span>
+          <span class="brand-arrow" aria-hidden="true">↗</span>
+        </a>
+        <span class="marker">Identity / 02</span>
+      </header>
+      <main>
+        <div>
+          <p class="index">Request not completed</p>
+          <h1>Access interrupted.</h1>
+        </div>
+        <div class="detail">
+          <p class="label">GreyBody Games / Authentication</p>
+          <div class="rule" aria-hidden="true"></div>
+          <p class="copy">
+            We could not complete your sign-in. Your account may not have access, or the authentication service may be
+            temporarily unavailable.
+          </p>
+          <p class="diagnostic">
+            Error <code>{{.StatusCode}} {{.Title}}</code>{{if .RequestID}} · Request <code>{{.RequestID}}</code>{{end}}
+          </p>
+          {{if .Redirect}}<a class="action" href="__AUTH_BASE_URL__{{.ProxyPrefix}}/sign_in?rd={{.Redirect}}"
+            ><span class="action-label">Try again</span><span class="action-arrow" aria-hidden="true">↗</span></a
+          >{{end}}
+        </div>
+      </main>
+      <footer><span>GreyBody Games</span><span>Authentication error</span></footer>
+    </div>
+  </body>
+</html>
+{{end}}

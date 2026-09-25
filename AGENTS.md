@@ -19,10 +19,11 @@ This file is the shared operating context for agents working in this repository.
   - `src/main.ts` owns interactive behavior, canvas rendering, pointer/device parallax, and reduced-motion handling.
   - `src/style.css` imports Tailwind and the home style modules.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
-- Local font assets live in `src/assets/fonts/`.
+- Local font assets live in `src/assets/fonts/`. The auth preview/build plugin embeds GreyBody Display directly into the generated auth HTML.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
 - `.github/workflows/pipeline.yml` owns repository events and calls the reusable CI and GitHub Pages deployment workflows. CI uses the Node.js version pinned in `.nvmrc`, builds `dist/` once, and passes the validated output to deployment as an ordinary workflow artifact.
 - `workers/docs-router/` owns the Cloudflare Worker that routes the canonical `/docs` path to the private documentation origin while leaving the website root on GitHub Pages.
+- `auth/templates/` and `auth/style.css` own the OAuth2 Proxy pages. `plugins/auth-preview.ts` serves local previews under `/auth/` and inlines the shared CSS into `auth/dist/` during `npm run build`; that output stays outside the website's published `dist/`.
 
 ## Deployment
 
@@ -32,6 +33,7 @@ This file is the shared operating context for agents working in this repository.
 - Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
 - The documentation router is intentionally secretless. Its Workers VPC Service binding is the only origin path; do not add a public origin hostname or service token unless the trust boundary changes.
 - `/docs/.access-check` is a no-store authentication probe used to reveal the otherwise-hidden documentation link on the public page. It must validate the OAuth2 Proxy session through Traefik ForwardAuth and must not expose identity data.
+- `.github/workflows/sync-oauth2-templates.yml` copies both auth pages to the Landscape chart and lets this repository win on concurrent chart edits. Keep the OAuth2 Proxy Go-template fields and `__AUTH_BASE_URL__` replacement token intact.
 
 ## Design Direction
 

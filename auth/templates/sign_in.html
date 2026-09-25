@@ -1,0 +1,54 @@
+{{define "sign_in.html"}}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#050505" />
+    <title>Sign in | GreyBody Games</title>
+    <style>
+      __AUTH_CSS__
+    </style>
+  </head>
+  <body class="auth-sign-in">
+    <div class="shell">
+      <header>
+        <a class="brand" href="https://greybodygames.com/" aria-label="GreyBody Games website">
+          <span class="brand-wordmark" aria-hidden="true">
+            <span class="brand-wordmark-line">
+              <span>GREYB</span>
+              <span class="brand-logo"
+                ><img src="https://greybodygames.com/greybody_games_logo.svg" width="64" height="64" alt=""
+              /></span>
+              <span>DY</span>
+            </span>
+            <span class="brand-games">Games</span>
+          </span>
+          <span class="brand-arrow" aria-hidden="true">↗</span>
+        </a>
+        <span class="marker">Identity / 01</span>
+      </header>
+      <main>
+        <div>
+          <p class="index">Restricted access</p>
+          <h1>Sign in.</h1>
+        </div>
+        <div class="detail">
+          <p class="label">GreyBody Games / Authentication</p>
+          <div class="rule" aria-hidden="true"></div>
+          <p class="copy">Continue with your GreyBody Games Microsoft account to access this private service.</p>
+          <form method="GET" action="__AUTH_BASE_URL__{{.ProxyPrefix}}/start">
+            <input type="hidden" name="rd" value="{{.Redirect}}" />
+            <button class="action" type="submit">
+              <span class="action-label">Continue with Microsoft</span
+              ><span class="action-arrow" aria-hidden="true">↗</span>
+            </button>
+          </form>
+        </div>
+      </main>
+      <footer><span>GreyBody Games</span><span>Authorization required</span></footer>
+    </div>
+  </body>
+</html>
+{{end}}
