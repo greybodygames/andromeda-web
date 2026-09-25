@@ -69,6 +69,14 @@
       text-transform: uppercase;
       text-shadow: 0 0 18px rgba(255, 255, 255, 0.14);
       white-space: nowrap;
+      user-select: none;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .wordmark-line[data-sign-in-active] [data-title-letter] {
+      pointer-events: auto;
+      cursor: default;
     }
 
     .identity-subtitle {

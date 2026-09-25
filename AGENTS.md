@@ -40,6 +40,7 @@ This file is the shared operating context for agents working in this repository.
 
 - The site should feel like a sharp, high-contrast game identity piece: monochrome, technical, cinematic, precise, and minimal.
 - Keep the first viewport focused on Andromeda as a work-in-progress game: typography-led title, working-title status, orbit treatment, annotations, and studio/social links.
+- When the documentation access probe returns `401`, clicking N, first D, R, M, and second D in the Andromeda title, in that order within three seconds of N, opens the central OAuth2 Proxy sign-in URL with `rd` set to the Andromeda homepage. A wrong letter or timeout resets the sequence. Keep it visually undiscoverable with no hover or cursor cue. The local Vite preview enables the sequence without authentication and shows `/auth/sign-in`. Keep the title inert for authenticated visitors and inconclusive production probe results; the Docs link remains the authenticated entry point.
 - The current visual system relies on black/near-black backgrounds, white/gray typography, thin technical lines, circular markers, skewed uppercase display text, and restrained motion.
 - Do not use the GreyBody logo or `GreyBody Display` font for the Andromeda title. Reserve those assets for GreyBody Games attribution and backlink treatments.
 - Avoid generic SaaS, landing-page, or card-heavy patterns. The page should not drift into decorative gradients, soft blobs, stock imagery, or marketing-template composition.

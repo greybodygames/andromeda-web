@@ -10,11 +10,84 @@ const annotationIndices = {
 }
 const copyrightAnchor = document.querySelector<HTMLElement>('[data-copyright-anchor]')
 const docsLink = document.querySelector<HTMLAnchorElement>('[data-docs-link]')
+const titleSequence = document.querySelector<HTMLElement>('[data-title-sequence]')
+const titleLetters = [...document.querySelectorAll<HTMLElement>('[data-title-letter]')]
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 let docsAccessCheckGeneration = 0
+const signInSequence = [1, 2, 3, 5, 7] // N, first D, R, M, second D
+const signInWindowMs = 3_000
+const authSignInUrl = 'https://auth.greybodygames.com/oauth2/sign_in'
+let sequencePosition = 0
+let sequenceStartedAt = 0
+let sequenceResetTimer: number | undefined
+
+const resetTitleSequence = () => {
+  sequencePosition = 0
+  sequenceStartedAt = 0
+  window.clearTimeout(sequenceResetTimer)
+  sequenceResetTimer = undefined
+}
+
+const setTitleSequenceAvailable = (available: boolean) => {
+  if (!titleSequence) {
+    return
+  }
+
+  if (available) {
+    titleSequence.dataset.signInActive = ''
+  } else {
+    delete titleSequence.dataset.signInActive
+    resetTitleSequence()
+  }
+}
+
+titleLetters.forEach((letter, index) => {
+  letter.addEventListener('click', () => {
+    if (!titleSequence?.hasAttribute('data-sign-in-active')) {
+      return
+    }
+
+    const now = performance.now()
+    if (sequencePosition > 0 && now - sequenceStartedAt >= signInWindowMs) {
+      resetTitleSequence()
+    }
+
+    if (index !== signInSequence[sequencePosition]) {
+      resetTitleSequence()
+      if (index !== signInSequence[0]) {
+        return
+      }
+    }
+
+    if (sequencePosition === 0) {
+      sequenceStartedAt = now
+      sequenceResetTimer = window.setTimeout(resetTitleSequence, signInWindowMs)
+    }
+
+    sequencePosition++
+    if (sequencePosition === signInSequence.length) {
+      resetTitleSequence()
+      if (import.meta.env.DEV) {
+        window.location.assign('/auth/sign-in')
+      } else {
+        const signInUrl = new URL(authSignInUrl)
+        signInUrl.searchParams.set('rd', new URL('/', window.location.href).toString())
+        window.location.assign(signInUrl.toString())
+      }
+    }
+  })
+})
 
 const checkDocsAccess = async () => {
-  if (!docsLink) {
+  if (!docsLink && !titleSequence) {
+    return
+  }
+
+  if (import.meta.env.DEV) {
+    if (docsLink) {
+      docsLink.hidden = true
+    }
+    setTitleSequenceAvailable(true)
     return
   }
 
@@ -29,11 +102,17 @@ const checkDocsAccess = async () => {
     })
 
     if (generation === docsAccessCheckGeneration) {
-      docsLink.hidden = response.status !== 204
+      if (docsLink) {
+        docsLink.hidden = response.status !== 204
+      }
+      setTitleSequenceAvailable(response.status === 401)
     }
   } catch {
     if (generation === docsAccessCheckGeneration) {
-      docsLink.hidden = true
+      if (docsLink) {
+        docsLink.hidden = true
+      }
+      setTitleSequenceAvailable(false)
     }
   }
 }
