@@ -69,7 +69,7 @@
   }
 
   .docs-link {
-    @apply pointer-events-auto flex min-h-[2.8rem] items-center justify-between gap-6 border border-white/[0.14] px-4 py-2 text-[0.78rem] leading-none font-bold tracking-[0.3em] text-white/[0.68] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none;
+    @apply pointer-events-auto flex min-h-[2.8rem] items-center justify-between gap-6 border border-white/[0.14] px-4 py-2 text-[0.875rem] leading-none font-bold tracking-[0.3em] text-white/[0.68] uppercase transition-colors duration-[160ms] hover:border-white/[0.34] hover:text-white focus-visible:border-white/[0.46] focus-visible:text-white focus-visible:outline-none;
     animation: docs-link-reveal 220ms ease-out both;
   }
 
