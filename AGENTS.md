@@ -30,8 +30,8 @@ This file is the shared operating context for agents working in this repository.
 - The pipeline must retain least-privilege Pages permissions, serialized production deployments, and static-site validation before artifact upload. The validation must require a root `index.html` and reject symbolic links.
 - `https://andromeda.greybodygames.com` is the intended custom domain. GitHub Pages configuration and DNS cutover are external release steps and must be verified without interrupting the currently live site.
 - Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
-- The documentation router is intentionally secretless. Cloudflare's same-zone Worker identity and a WAF custom rule protect the origin; do not add a service token unless the trust boundary changes.
-- `/docs/.access-check` is the Access-protected, no-store `204` probe used to reveal the otherwise-hidden documentation link on the public page. Keep it under the `/docs` Access application and do not replace it with an endpoint that exposes identity data.
+- The documentation router is intentionally secretless. Its Workers VPC Service binding is the only origin path; do not add a public origin hostname or service token unless the trust boundary changes.
+- `/docs/.access-check` is a no-store authentication probe used to reveal the otherwise-hidden documentation link on the public page. It must validate the OAuth2 Proxy session through Traefik ForwardAuth and must not expose identity data.
 
 ## Design Direction
 

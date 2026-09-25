@@ -11,7 +11,6 @@ function errorResponse(message, status) {
 function readConfiguration(env) {
   const publicHost = env.PUBLIC_HOST
   const pathPrefix = env.DOCS_PATH_PREFIX
-  const origin = new URL(env.DOCS_ORIGIN)
 
   if (!publicHost || publicHost.includes('/') || publicHost.includes(':')) {
     throw new Error('PUBLIC_HOST must be a hostname')
@@ -21,19 +20,11 @@ function readConfiguration(env) {
     throw new Error('DOCS_PATH_PREFIX must be a non-root path without a trailing slash')
   }
 
-  if (
-    origin.protocol !== 'https:' ||
-    origin.username ||
-    origin.password ||
-    origin.port ||
-    origin.pathname !== '/' ||
-    origin.search ||
-    origin.hash
-  ) {
-    throw new Error('DOCS_ORIGIN must be an HTTPS origin without credentials, a custom port, path, query, or fragment')
+  if (!env.TRAEFIK_ORIGIN || typeof env.TRAEFIK_ORIGIN.fetch !== 'function') {
+    throw new Error('TRAEFIK_ORIGIN must be a VPC Service binding')
   }
 
-  return { publicHost, pathPrefix, origin }
+  return { publicHost, pathPrefix }
 }
 
 function isDocumentationPath(pathname, pathPrefix) {
@@ -56,7 +47,7 @@ export default {
     }
 
     const publicUrl = new URL(request.url)
-    const { publicHost, pathPrefix, origin } = configuration
+    const { publicHost, pathPrefix } = configuration
 
     // Reject workers.dev and preview URLs instead of exposing an alternate route
     // to the private documentation origin.
@@ -81,21 +72,18 @@ export default {
       })
     }
 
-    // Cloudflare Access runs before this Worker. A response from this endpoint
-    // therefore proves that Access admitted the request, without exposing any
-    // identity data or contacting the documentation origin.
-    if (isAccessCheckPath(publicUrl.pathname, pathPrefix)) {
-      return new Response(null, {
-        status: 204,
-        headers: {
-          'Cache-Control': 'no-store',
-        },
-      })
-    }
+    const isAccessCheck = isAccessCheckPath(publicUrl.pathname, pathPrefix)
+    const upstreamUrl = new URL(publicUrl)
+    upstreamUrl.protocol = 'http:'
+    upstreamUrl.port = ''
 
-    const upstreamUrl = new URL(origin)
-    upstreamUrl.pathname = publicUrl.pathname
-    upstreamUrl.search = publicUrl.search
+    if (isAccessCheck) {
+      // Probe a real documentation path so Traefik's ForwardAuth middleware
+      // validates the OAuth2 Proxy session before the public site reveals its
+      // otherwise-hidden documentation link.
+      upstreamUrl.pathname = pathPrefix
+      upstreamUrl.search = ''
+    }
 
     const upstreamHeaders = new Headers()
 
@@ -107,6 +95,7 @@ export default {
       'Accept-Encoding',
       'Accept-Language',
       'Cache-Control',
+      'Cookie',
       'If-Match',
       'If-Modified-Since',
       'If-None-Match',
@@ -125,7 +114,7 @@ export default {
     upstreamHeaders.set('X-Forwarded-Proto', 'https')
 
     const upstreamRequest = new Request(upstreamUrl, {
-      method: request.method,
+      method: isAccessCheck ? 'HEAD' : request.method,
       headers: upstreamHeaders,
       redirect: 'manual',
     })
@@ -133,21 +122,30 @@ export default {
     let upstreamResponse
 
     try {
-      upstreamResponse = await fetch(upstreamRequest)
+      upstreamResponse = await env.TRAEFIK_ORIGIN.fetch(upstreamRequest)
     } catch (error) {
-      console.error('Documentation origin request failed', error)
+      console.error('Documentation VPC origin request failed', error)
       return errorResponse('Documentation origin unavailable', 502)
+    }
+
+    if (isAccessCheck) {
+      return new Response(null, {
+        status: upstreamResponse.status === 200 ? 204 : upstreamResponse.status,
+        headers: {
+          'Cache-Control': 'no-store',
+        },
+      })
     }
 
     const responseHeaders = new Headers(upstreamResponse.headers)
     const location = responseHeaders.get('Location')
 
-    // Nginx may emit an absolute redirect while normalizing a trailing slash.
-    // Keep that redirect on the canonical public hostname.
+    // The VPC Service fixes the network destination while this URL supplies
+    // the Host header. Keep any origin-generated redirect on public HTTPS.
     if (location) {
       const redirectUrl = new URL(location, upstreamUrl)
 
-      if (redirectUrl.hostname === origin.hostname) {
+      if (redirectUrl.hostname === publicHost) {
         redirectUrl.protocol = 'https:'
         redirectUrl.host = publicHost
         responseHeaders.set('Location', redirectUrl.toString())

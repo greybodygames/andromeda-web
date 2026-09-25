@@ -7,9 +7,14 @@
   "preview_urls": false,
   "vars": {
     "PUBLIC_HOST": "andromeda.greybodygames.com",
-    "DOCS_ORIGIN": "https://andromeda-docs.greybodygames.com",
     "DOCS_PATH_PREFIX": "/docs",
   },
+  "vpc_services": [
+    {
+      "binding": "TRAEFIK_ORIGIN",
+      "service_id": "01a0d3ad-c157-7782-93ef-bd8b713b8c57",
+    },
+  ],
   "routes": [
     {
       "pattern": "andromeda.greybodygames.com/docs*",
