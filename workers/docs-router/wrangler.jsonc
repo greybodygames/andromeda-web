@@ -8,6 +8,7 @@
   "vars": {
     "PUBLIC_HOST": "andromeda.greybodygames.com",
     "DOCS_PATH_PREFIX": "/docs",
+    "AUTH_SIGN_IN_URL": "https://auth.greybodygames.com/oauth2/sign_in",
   },
   "vpc_services": [
     {

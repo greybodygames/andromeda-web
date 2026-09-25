@@ -11,6 +11,7 @@ function errorResponse(message, status) {
 function readConfiguration(env) {
   const publicHost = env.PUBLIC_HOST
   const pathPrefix = env.DOCS_PATH_PREFIX
+  const authSignInUrl = new URL(env.AUTH_SIGN_IN_URL)
 
   if (!publicHost || publicHost.includes('/') || publicHost.includes(':')) {
     throw new Error('PUBLIC_HOST must be a hostname')
@@ -20,11 +21,22 @@ function readConfiguration(env) {
     throw new Error('DOCS_PATH_PREFIX must be a non-root path without a trailing slash')
   }
 
+  if (
+    authSignInUrl.protocol !== 'https:' ||
+    authSignInUrl.username ||
+    authSignInUrl.password ||
+    authSignInUrl.port ||
+    authSignInUrl.search ||
+    authSignInUrl.hash
+  ) {
+    throw new Error('AUTH_SIGN_IN_URL must be an HTTPS URL without credentials, a custom port, query, or fragment')
+  }
+
   if (!env.TRAEFIK_ORIGIN || typeof env.TRAEFIK_ORIGIN.fetch !== 'function') {
     throw new Error('TRAEFIK_ORIGIN must be a VPC Service binding')
   }
 
-  return { publicHost, pathPrefix }
+  return { publicHost, pathPrefix, authSignInUrl }
 }
 
 function isDocumentationPath(pathname, pathPrefix) {
@@ -47,7 +59,7 @@ export default {
     }
 
     const publicUrl = new URL(request.url)
-    const { publicHost, pathPrefix } = configuration
+    const { publicHost, pathPrefix, authSignInUrl } = configuration
 
     // Reject workers.dev and preview URLs instead of exposing an alternate route
     // to the private documentation origin.
@@ -133,6 +145,19 @@ export default {
         status: upstreamResponse.status === 200 ? 204 : upstreamResponse.status,
         headers: {
           'Cache-Control': 'no-store',
+        },
+      })
+    }
+
+    if (upstreamResponse.status === 401) {
+      const signInUrl = new URL(authSignInUrl)
+      signInUrl.searchParams.set('rd', publicUrl.toString())
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          'Cache-Control': 'no-store',
+          Location: signInUrl.toString(),
         },
       })
     }

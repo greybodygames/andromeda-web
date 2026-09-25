@@ -17,7 +17,7 @@ andromeda.greybodygames.com/docs and /docs/*
 
 ## Configuration
 
-`wrangler.jsonc` is the source of truth for the Worker name, route, public hostname, path prefix, VPC Service binding, and disabled `workers.dev` and preview endpoints. None of these values is secret.
+`wrangler.jsonc` is the source of truth for the Worker name, route, public hostname, path prefix, central sign-in URL, VPC Service binding, and disabled `workers.dev` and preview endpoints. None of these values is secret.
 
 Cloudflare must also be configured with:
 
@@ -30,6 +30,19 @@ Cloudflare must also be configured with:
   application until the VPC-backed Worker deployment has been verified.
 
 No service token, Worker secret, or GitHub Actions secret is required.
+
+## Authentication navigation
+
+Traefik ForwardAuth returns `401` for a missing or invalid OAuth2 Proxy session.
+For ordinary documentation requests, the Worker converts that response into a
+`302` navigation to `https://auth.greybodygames.com/oauth2/sign_in`, with the
+complete original public URL in the `rd` query parameter. The browser therefore
+shows the central sign-in hostname before continuing through Microsoft Entra and
+returning to the original documentation URL.
+
+The Worker deliberately does not redirect the background access-check probe or
+genuine `403` responses. The probe must remain non-interactive, and repeating
+the login flow cannot resolve an authorization denial.
 
 ## Authenticated access check
 
@@ -69,8 +82,10 @@ npm run worker:check
 After production deployment, verify:
 
 - `/` still comes from GitHub Pages.
-- `/docs` and `/docs/*` require OAuth2 Proxy authentication and reach the documentation site through Workers VPC.
+- A signed-out `/docs` or `/docs/*` navigation redirects to the central OAuth2 Proxy sign-in page, and a successful login returns to the complete original URL.
+- Authenticated `/docs` and `/docs/*` requests reach the documentation site through Workers VPC.
 - An OAuth2-authenticated `GET` or `HEAD` request to `/docs/.access-check` returns `204` with `Cache-Control: no-store`; a signed-out request returns the authentication failure status and keeps the link hidden.
+- A genuine `403` remains an authorization failure and does not start another login flow.
 - `/docs-example` passes through to GitHub Pages.
 - The Kubernetes origin has no public hostname or Worker-bypass route.
 - Documentation navigation, Next assets, search, API graph assets, redirects, and query strings work through the canonical hostname.

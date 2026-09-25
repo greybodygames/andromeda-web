@@ -33,6 +33,7 @@ This file is the shared operating context for agents working in this repository.
 - Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
 - The documentation router is intentionally secretless. Its Workers VPC Service binding is the only origin path; do not add a public origin hostname or service token unless the trust boundary changes.
 - `/docs/.access-check` is a no-store authentication probe used to reveal the otherwise-hidden documentation link on the public page. It must validate the OAuth2 Proxy session through Traefik ForwardAuth and must not expose identity data.
+- For ordinary documentation navigation, the router converts a Traefik ForwardAuth `401` into a redirect to the central OAuth2 Proxy sign-in page. The access-check probe and genuine `403` responses must retain their original status so background checks do not start login flows and authorization failures do not loop.
 - `.github/workflows/sync-oauth2-templates.yml` copies both auth pages to the Landscape chart and lets this repository win on concurrent chart edits. Keep the OAuth2 Proxy Go-template fields and `__AUTH_BASE_URL__` replacement token intact.
 
 ## Design Direction
