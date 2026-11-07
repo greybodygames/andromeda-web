@@ -21,7 +21,7 @@ This file is the shared operating context for agents working in this repository.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
 - Local font assets live in `src/assets/fonts/`. The auth preview/build plugin embeds GreyBody Display directly into the generated auth HTML.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
-- `.github/workflows/pipeline.yml` owns repository events and calls the reusable CI and GitHub Pages deployment workflows. CI uses the Node.js version pinned in `.nvmrc`, builds `dist/` once, and passes the validated output to deployment as an ordinary workflow artifact.
+- `.github/workflows/pipeline.yaml` owns repository events and calls the reusable CI and GitHub Pages deployment workflows. CI uses the Node.js version pinned in `.nvmrc`, builds `dist/` once, and passes the validated output to deployment as an ordinary workflow artifact.
 - `workers/docs-router/` owns the Cloudflare Worker that routes the canonical `/docs` path to the private documentation origin while leaving the website root on GitHub Pages.
 - `auth/templates/` and `auth/style.css` own the OAuth2 Proxy pages. `plugins/auth-preview.ts` serves local previews under `/auth/` and inlines the shared CSS into `auth/dist/` during `npm run build`; that output stays outside the website's published `dist/`.
 
@@ -34,7 +34,7 @@ This file is the shared operating context for agents working in this repository.
 - The documentation router is intentionally secretless. Its Workers VPC Service binding is the only origin path; do not add a public origin hostname or service token unless the trust boundary changes.
 - `/docs/.access-check` is a no-store authentication probe used to reveal the otherwise-hidden documentation link on the public page. It must validate the OAuth2 Proxy session through Traefik ForwardAuth and must not expose identity data.
 - For ordinary documentation navigation, the router converts a Traefik ForwardAuth `401` into a redirect to the central OAuth2 Proxy sign-in page. The access-check probe and genuine `403` responses must retain their original status so background checks do not start login flows and authorization failures do not loop.
-- `.github/workflows/sync-oauth2-templates.yml` copies both auth pages to the Landscape chart and lets this repository win on concurrent chart edits. Keep the OAuth2 Proxy Go-template fields and `__AUTH_BASE_URL__` replacement token intact.
+- `.github/workflows/sync-oauth2-templates.yaml` copies both auth pages to the Landscape chart and lets this repository win on concurrent chart edits. Keep the OAuth2 Proxy Go-template fields and `__AUTH_BASE_URL__` replacement token intact.
 
 ## Design Direction
 
