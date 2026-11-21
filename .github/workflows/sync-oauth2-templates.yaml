@@ -72,6 +72,12 @@ jobs:
             git -C charts fetch origin main
             git -C charts checkout --force --detach origin/main
 
+            templates_dir='oauth2-proxy/envs/hetzner-fsn1-dc4-prod/greybodygames'
+            # Older chart revisions still store the generated pages here during the move.
+            if [[ ! -f "charts/$templates_dir/sign_in.html" && ! -f "charts/$templates_dir/error.html" ]]; then
+              templates_dir='oauth2-proxy/files/templates'
+            fi
+
             for name in sign_in.html error.html; do
               {
                 cat <<'NOTICE'
@@ -82,21 +88,21 @@ jobs:
           */}}
           NOTICE
                 cat "source/auth/dist/$name"
-              } > "charts/oauth2-proxy/files/templates/$name"
+              } > "charts/$templates_dir/$name"
             done
 
-            expected=$'oauth2-proxy/files/templates/error.html\noauth2-proxy/files/templates/sign_in.html'
+            expected=$(printf '%s\n' "$templates_dir/error.html" "$templates_dir/sign_in.html")
             changed=$(git -C charts status --short --untracked-files=all | cut -c4- | LC_ALL=C sort)
             if [[ -z "$changed" ]]; then
               echo 'Deployment copies are already current.'
               exit 0
             fi
-            if [[ "$changed" != "$expected" && "$changed" != 'oauth2-proxy/files/templates/error.html' && "$changed" != 'oauth2-proxy/files/templates/sign_in.html' ]]; then
+            if [[ "$changed" != "$expected" && "$changed" != "$templates_dir/error.html" && "$changed" != "$templates_dir/sign_in.html" ]]; then
               echo "Unexpected chart changes: $changed" >&2
               exit 1
             fi
 
-            git -C charts add -- oauth2-proxy/files/templates/sign_in.html oauth2-proxy/files/templates/error.html
+            git -C charts add -- "$templates_dir/sign_in.html" "$templates_dir/error.html"
             git -C charts commit -m 'chore(oauth2-proxy): sync Andromeda auth templates'
             if git -C charts push origin HEAD:refs/heads/main; then
               exit 0
