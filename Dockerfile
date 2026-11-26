@@ -10,7 +10,6 @@ RUN mkdir -p /home/node/workspace
 WORKDIR /home/node/workspace
 
 COPY --chown=node:node package.json package-lock.json ./
-COPY --chown=node:node workers/docs-router/package.json workers/docs-router/package.json
 
 RUN npm ci --ignore-scripts
 

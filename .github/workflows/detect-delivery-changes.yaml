@@ -48,4 +48,4 @@ jobs:
         with:
           base-ref: ${{ steps.event-range.outputs.base-ref }}
           head-ref: ${{ steps.event-range.outputs.head-ref }}
-          pattern: '^(?:\.dockerignore|\.github/(?:actionlint\.yaml|scripts/Resolve-DeliveryEventRange\.ps1|workflows/(?:ci|deploy|detect-delivery-changes|deliver-website|pipeline|prepare-website)\.yaml)|\.nvmrc|Dockerfile|index\.html|nginx\.conf|package(?:-lock)?\.json|public/.+|src/.+|tsconfig\.json|vite\.config\.ts|auth/(?:style\.css|templates/.+)|plugins/.+|workers/docs-router/package\.json)$'
+          pattern: '^(?:\.dockerignore|\.github/(?:actionlint\.yaml|scripts/Resolve-DeliveryEventRange\.ps1|workflows/(?:ci|deploy|detect-delivery-changes|deliver-website|pipeline|prepare-website)\.yaml)|\.nvmrc|Dockerfile|index\.html|nginx\.conf|package(?:-lock)?\.json|public/.+|src/.+|tsconfig\.json|vite\.config\.ts|auth/(?:style\.css|templates/.+)|plugins/.+)$'

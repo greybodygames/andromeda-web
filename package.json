@@ -9,9 +9,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "worker:check": "npm run check --workspace=@greybodygames/andromeda-docs-router",
-    "worker:deploy": "npm run deploy --workspace=@greybodygames/andromeda-docs-router"
+    "format:check": "prettier --check ."
   },
   "author": "Sayak Mukhopadhyay",
   "license": "UNLICENSED",
@@ -26,8 +24,5 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
     "tailwindcss": "^4.3.0"
-  },
-  "workspaces": [
-    "workers/*"
-  ]
+  }
 }

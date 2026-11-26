@@ -23,7 +23,6 @@ This file is the shared operating context for agents working in this repository.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
 - `.github/workflows/pipeline.yaml` owns repository events and calls the reusable CI and web delivery workflows. CI uses the Node.js version pinned in `.nvmrc` to build and validate `dist/`.
 - `Dockerfile` builds the site from source and copies `dist/` into unprivileged NGINX. `nginx.conf` serves the public site on port 8080 and exposes `/healthz` for cluster probes.
-- `workers/docs-router/` owns the Cloudflare Worker that routes the canonical `/docs` path to the private documentation origin.
 - `auth/templates/` and `auth/style.css` own the OAuth2 Proxy pages. `plugins/auth-preview.ts` serves local previews under `/auth/` and inlines the shared CSS into `auth/dist/` during `npm run build`; that output stays outside the website's published `dist/`.
 
 ## Deployment
@@ -31,10 +30,9 @@ This file is the shared operating context for agents working in this repository.
 - Do not reintroduce the retired Azure Static Web Apps pipeline.
 - Keep production cluster deliveries serialized. CI must validate that the static site has a root `index.html` and contains no symbolic links before delivery.
 - `https://andromeda.greybodygames.com` is the intended custom domain. DNS cutover is an external release step.
-- Treat `workers/docs-router/wrangler.jsonc` as the source of truth for the documentation router. Deploy it through Cloudflare Workers Builds connected to GitHub; do not maintain a divergent dashboard-edited copy.
-- The documentation router is intentionally secretless. Its Workers VPC Service binding is the only origin path; do not add a public origin hostname or service token unless the trust boundary changes.
+- The Andromeda Docs chart in Landscape owns the Traefik routes for `/docs` and `/docs/.access-check`.
 - `/docs/.access-check` is a no-store authentication probe used to reveal the otherwise-hidden documentation link on the public page. It must validate the OAuth2 Proxy session through Traefik ForwardAuth and must not expose identity data.
-- For ordinary documentation navigation, the router converts a Traefik ForwardAuth `401` into a redirect to the central OAuth2 Proxy sign-in page. The access-check probe and genuine `403` responses must retain their original status so background checks do not start login flows and authorization failures do not loop.
+- For ordinary documentation navigation, Traefik converts a ForwardAuth `401` into a redirect to the central OAuth2 Proxy sign-in page. The access-check probe and genuine `403` responses must retain their original status so background checks do not start login flows and authorization failures do not loop.
 - `.github/workflows/sync-oauth2-templates.yaml` copies both auth pages to the Landscape chart and lets this repository win on concurrent chart edits. Keep the OAuth2 Proxy Go-template fields and `__AUTH_BASE_URL__` replacement token intact.
 
 ### Cluster delivery
@@ -80,7 +78,6 @@ Run the narrowest useful checks for the change:
 - `npm run format:check` for formatting-only verification.
 - `npm run build` for TypeScript and production build verification.
 - `npm run dev` when visual or interaction changes need browser inspection.
-- `npm run worker:check` to validate the Worker workspace bundle without deploying it.
 - For deployment changes, confirm that `dist/index.html` exists and `dist/` contains no symbolic links, matching the CI static-site validation.
 - For container changes, build from the repository root and check the homepage, static assets, `/healthz`, and the 404 for an unknown public path such as `/docs-example`.
 
