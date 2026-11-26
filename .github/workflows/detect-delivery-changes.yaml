@@ -1,0 +1,51 @@
+name: Detect Delivery Changes
+
+on:
+  workflow_call:
+    outputs:
+      website-changed:
+        description: Whether website delivery inputs changed in the selected event range
+        value: ${{ jobs.detect-changes.outputs.website-changed }}
+
+permissions: {}
+
+jobs:
+  detect-changes:
+    name: Detect delivery changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    outputs:
+      website-changed: ${{ steps.website.outputs.changed == 'true' }}
+
+    steps:
+      - name: Checkout event commit history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          fetch-tags: false
+          persist-credentials: false
+          sparse-checkout: |
+            .github/workflows/detect-delivery-changes.yaml
+            .github/scripts/Resolve-DeliveryEventRange.ps1
+          sparse-checkout-cone-mode: false
+
+      - id: event-range
+        name: Resolve event range
+        shell: pwsh
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          SELECTED_SHA: ${{ github.sha }}
+        run: ./.github/scripts/Resolve-DeliveryEventRange.ps1
+
+      - id: website
+        name: Detect website changes
+        uses: SayakMukhopadhyay/github-actions/is-file-changed@v1
+        with:
+          base-ref: ${{ steps.event-range.outputs.base-ref }}
+          head-ref: ${{ steps.event-range.outputs.head-ref }}
+          pattern: '^(?:\.dockerignore|\.github/(?:actionlint\.yaml|scripts/Resolve-DeliveryEventRange\.ps1|workflows/(?:ci|deploy|detect-delivery-changes|deliver-website|pipeline|prepare-website)\.yaml)|\.nvmrc|Dockerfile|index\.html|nginx\.conf|package(?:-lock)?\.json|public/.+|src/.+|tsconfig\.json|vite\.config\.ts|auth/(?:style\.css|templates/.+)|plugins/.+|workers/docs-router/package\.json)$'

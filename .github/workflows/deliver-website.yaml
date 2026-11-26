@@ -1,0 +1,39 @@
+name: Deliver Website
+
+on:
+  workflow_call:
+    secrets:
+      GITOPS_APP_PRIVATE_KEY:
+        description: GitHub App private key used to update the GitOps repository
+        required: true
+    outputs:
+      image-tag:
+        description: Published website image tag
+        value: ${{ jobs.prepare-website.outputs.image-tag }}
+      image-digest:
+        description: Published website image digest
+        value: ${{ jobs.prepare-website.outputs.image-digest }}
+
+permissions: {}
+
+jobs:
+  prepare-website:
+    name: Prepare Website
+    permissions:
+      contents: read
+      packages: write
+    uses: $/.github/workflows/prepare-website.yaml
+
+  deploy-website:
+    name: Deploy Website
+    if: needs.prepare-website.outputs.image-tag != ''
+    needs:
+      - prepare-website
+    permissions: {}
+    uses: $/.github/workflows/deploy.yaml
+    with:
+      deployment-environment: website
+      chart-name: andromeda
+      image-tag: ${{ needs.prepare-website.outputs.image-tag }}
+    secrets:
+      GITOPS_APP_PRIVATE_KEY: ${{ secrets.GITOPS_APP_PRIVATE_KEY }}

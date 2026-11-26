@@ -2,12 +2,6 @@ name: CI
 
 on:
   workflow_call:
-    inputs:
-      publish-artifact:
-        description: Upload the validated static site for a downstream deployment
-        required: false
-        type: boolean
-        default: false
 
 permissions: {}
 
@@ -35,16 +29,6 @@ jobs:
         uses: SayakMukhopadhyay/github-actions/validate-static-site@v1
         with:
           path: dist
-
-      - name: Upload static site
-        if: inputs.publish-artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: site-andromeda-web
-          path: dist
-          if-no-files-found: error
-          include-hidden-files: true
-          retention-days: 7
 
   codeql:
     name: Analyze Go with CodeQL

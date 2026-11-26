@@ -1,0 +1,47 @@
+name: Prepare Website
+
+on:
+  workflow_call:
+    outputs:
+      image-tag:
+        description: Published website image tag
+        value: ${{ jobs.publish-image.outputs.image-tag }}
+      image-digest:
+        description: Published website image digest
+        value: ${{ jobs.publish-image.outputs.image-digest }}
+
+permissions: {}
+
+jobs:
+  publish-image:
+    name: Publish website image
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: website
+      url: ${{ vars.URL }}
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image-tag: ${{ steps.image.outputs.image-reference != '' && format('build-{0}', github.sha) || '' }}
+      image-digest: ${{ steps.image.outputs.image-digest }}
+
+    steps:
+      - id: image
+        name: Build and publish website image
+        uses: SayakMukhopadhyay/github-actions/image-build-push@v1
+        with:
+          tag: build-${{ github.sha }}
+          version: build-${{ github.sha }}
+          registry: ghcr.io
+          image-repository: ${{ github.repository }}
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+          working-directory: .
+          build-args: |
+            SITE_URL=${{ vars.URL }}
+          push: 'true'
