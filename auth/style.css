@@ -13,8 +13,8 @@
   font-display: swap;
 }
 @font-face {
-  font-family: 'GreyBody Display';
-  src: url('data:font/woff;base64,__GREYBODY_DISPLAY_FONT_DATA__') format('woff');
+  font-family: 'GreyBody Games Display';
+  src: url('data:font/woff;base64,__GREYBODY_GAMES_DISPLAY_FONT_DATA__') format('woff');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -99,7 +99,7 @@ footer {
   display: grid;
   grid-template-columns: auto 1.02em auto;
   align-items: center;
-  font-family: 'GreyBody Display', Impact, sans-serif;
+  font-family: 'GreyBody Games Display', Impact, sans-serif;
   font-size: clamp(1.55rem, 2.25vw, 2.08rem);
   letter-spacing: 0.02em;
   line-height: 0.82;

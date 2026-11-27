@@ -19,7 +19,7 @@ This file is the shared operating context for agents working in this repository.
   - `src/main.ts` owns interactive behavior, canvas rendering, pointer/device parallax, and reduced-motion handling.
   - `src/style.css` imports Tailwind and the home style modules.
 - Public brand assets live in `public/`; the GreyBody Games logo is used for studio attribution/backlinks, not as the Andromeda title mark.
-- Local font assets live in `src/assets/fonts/`. The auth preview/build plugin embeds GreyBody Display directly into the generated auth HTML.
+- Local font assets live in `src/assets/fonts/`. The auth preview/build plugin embeds GreyBody Games Display directly into the generated auth HTML.
 - `AgentNotes/website-concept.png` is a visual concept reference. Consult it before changing the core look and feel.
 - `.github/workflows/pipeline.yaml` owns repository events and calls the reusable CI and web delivery workflows. CI uses the Node.js version pinned in `.nvmrc` to build and validate `dist/`.
 - `Dockerfile` builds the site from source and copies `dist/` into unprivileged NGINX. `nginx.conf` serves the public site on port 8080 and exposes `/healthz` for cluster probes.
@@ -49,7 +49,7 @@ This file is the shared operating context for agents working in this repository.
 - Keep the first viewport focused on Andromeda as a work-in-progress game: typography-led title, working-title status, orbit treatment, annotations, and studio/social links.
 - When the documentation access probe returns `401`, clicking N, first D, R, M, and second D in the Andromeda title, in that order within three seconds of N, opens the central OAuth2 Proxy sign-in URL with `rd` set to the Andromeda homepage. A wrong letter or timeout resets the sequence. Keep it visually undiscoverable with no hover or cursor cue. The local Vite preview enables the sequence without authentication and shows `/auth/sign-in`. Keep the title inert for authenticated visitors and inconclusive production probe results; the Docs link remains the authenticated entry point.
 - The current visual system relies on black/near-black backgrounds, white/gray typography, thin technical lines, circular markers, skewed uppercase display text, and restrained motion.
-- Do not use the GreyBody logo or `GreyBody Display` font for the Andromeda title. Reserve those assets for GreyBody Games attribution and backlink treatments.
+- Do not use the GreyBody Games logo or `GreyBody Games Display` font for the Andromeda title. Reserve those assets for GreyBody Games attribution and backlink treatments.
 - Avoid generic SaaS, landing-page, or card-heavy patterns. The page should not drift into decorative gradients, soft blobs, stock imagery, or marketing-template composition.
 - Preserve responsive composition. Desktop can be poster-like and spatial; tablet/mobile should become readable, stacked, and scrollable without losing the identity-stage impact.
 
@@ -67,7 +67,7 @@ This file is the shared operating context for agents working in this repository.
 - `src/styles/home/theme.css` defines fonts and core theme tokens.
 - `src/styles/home/base.css`, `components.css`, `poster.css`, `identity.css`, and `responsive.css` split styling by responsibility. Put new rules in the closest matching module.
 - Tailwind utilities are used through CSS `@apply`; keep that pattern consistent instead of mixing large inline class rewrites into `index.html`.
-- Maintain the existing typography system: Chakra Petch for UI/body text and GreyBody Display for brand display usage.
+- Maintain the existing typography system: Chakra Petch for UI/body text and GreyBody Games Display for brand display usage.
 - Keep letter spacing, uppercase treatments, line weights, and border opacity consistent with existing components.
 - Test mobile breakpoints when changing layout. Current key breakpoints include `980px` and `620px`.
 

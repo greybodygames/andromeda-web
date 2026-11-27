@@ -12,12 +12,12 @@ async function loadTemplate(page: string): Promise<string> {
   const [source, css, displayFont] = await Promise.all([
     readFile(fileURLToPath(new URL(`../auth/templates/${page}`, import.meta.url)), 'utf8'),
     readFile(fileURLToPath(new URL('../auth/style.css', import.meta.url)), 'utf8'),
-    readFile(fileURLToPath(new URL('../src/assets/fonts/greybody-display.woff', import.meta.url))),
+    readFile(fileURLToPath(new URL('../src/assets/fonts/greybody-games-display.woff', import.meta.url))),
   ])
   if (!source.includes('__AUTH_CSS__')) throw new Error(`${page} is missing the shared CSS placeholder`)
   return source.replace(
     '__AUTH_CSS__',
-    css.replace('__GREYBODY_DISPLAY_FONT_DATA__', displayFont.toString('base64')).trim(),
+    css.replace('__GREYBODY_GAMES_DISPLAY_FONT_DATA__', displayFont.toString('base64')).trim(),
   )
 }
 
